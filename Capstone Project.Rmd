@@ -1,0 +1,22 @@
+---
+title: "Capstone Project"
+output: html_document
+---
+
+```{r}
+IPO = read.csv("IPODataFull.csv")
+```
+
+```{r}
+library(dplyr)
+IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
+```
+
+```{r}
+nrow(IPO)
+```
+
+```{r}
+sum(is.na(IPO$YearFounded))
+```
+
