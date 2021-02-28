@@ -3,20 +3,65 @@ title: "Capstone Project"
 output: html_document
 ---
 
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+```
+
 ```{r}
 IPO = read.csv("IPODataFull.csv")
 ```
 
+## Data Cleaning
+
 ```{r}
-library(dplyr)
+# default date in month
+defaultDay = "15"
+# default date in year
+defaultDate ="06-30"
+```
+
+
+```{r}
+# drop na in YearFounded
+IPO = IPO[!is.na(IPO$YearFounded),]
+# look at original datetime format
 IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
 ```
 
 ```{r}
-nrow(IPO)
+# reformat ipoDate into IPODate
+IPO$IPODate = as.Date(IPO$ipoDate,format='%m/%d/%y %H:%M')
+# drop ipoDate
+IPO = subset(IPO, select = -ipoDate)
+# look again
+IPO %>% select(c("IPODate", "YearFounded", "exactDateFounded"))
 ```
 
 ```{r}
-sum(is.na(IPO$YearFounded))
+# reformat exactDateFounded into DateFounded
+DateFounded = c(Sys.Date())
+for (i in 1:nrow(IPO)){
+  rawDate = IPO$exactDateFounded[i]
+  len = nchar(gsub('[^,]', '', rawDate)) +1L
+  if (len==1){
+    mydate = paste0(rawDate,defaultDate)
+    DateFounded = c(DateFounded, as.Date(mydate,format='%Y%m-%d'))
+  } else if (len==2){
+    mydate = paste0(rawDate,defaultDay)
+    DateFounded = c(DateFounded, as.Date(mydate,format='%B,%Y%d'))
+  } else if (len==3){
+    DateFounded = c(DateFounded, as.Date(rawDate,format="%B,%d,%Y"))
+  } else if (len==4){
+    DateFounded = c(DateFounded, as.Date("June,28,1951", format="%B,%d,%Y")) # I looked at this exception
+  }
+}
+IPO$DateFounded = DateFounded[-1]
+# drop exactDateFounded
+IPO = subset(IPO, select = -exactDateFounded)
+```
+
+```{r}
+# look again
+IPO %>% select(c("IPODate", "YearFounded", "DateFounded"))
 ```
 
