@@ -20,7 +20,6 @@ defaultDay = "15"
 defaultDate ="06-30"
 ```
 
-
 ```{r}
 # drop na in YearFounded
 IPO = IPO[!is.na(IPO$YearFounded),]
@@ -62,6 +61,106 @@ IPO = subset(IPO, select = -exactDateFounded)
 
 ```{r}
 # look again
-IPO %>% select(c("IPODate", "YearFounded", "DateFounded"))
+IPO %>% select(c("IPODate", "YearFounded", "DateFounded","exactDiffernce"))
+```
+
+```{r}
+# subset of the original data set without TVC or anything after Fiscal_year
+IPO_sub <- select (IPO, IPODate, YearFounded, DateFounded, Symbol, DaysBetterThanSP, daysProfit, daysProfitGrouped, exactDiffernce, Name, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, PresidentAge, Revenue, netIncome,  lastFiscalYearGrowth, employees)
+```
+
+
+```{r}
+# make numeric Revenue
+for (i in 1:nrow(IPO_sub)){
+  x=gsub("\\$", "", IPO_sub$Revenue[i])
+  if (endsWith(x,"B")){
+    x<-as.numeric(gsub("B", "", x))
+    x=x*1000000000
+  }
+  else if (endsWith(x,"M")){
+    x<-as.numeric(gsub("M", "", x))
+    x=x*1000000
+  }
+  IPO_sub$Revenue[i]<-x
+}
+
+# make numeric netIncome
+for (i in 1:nrow(IPO_sub)){
+  x=gsub("\\$", "", IPO_sub$netIncome[i])
+  if (endsWith(x,"B")){
+    x<-as.numeric(gsub("B", "", x))
+    x=x*1000000000
+  }
+  else if (endsWith(x,"M")){
+    x<-as.numeric(gsub("M", "", x))
+    x=x*1000000
+  }
+  IPO_sub$netIncome[i]<-x
+}
+```
+
+```{r}
+IPO_sub$Revenue<-as.numeric(IPO_sub$Revenue)
+IPO_sub$netIncome<-as.numeric(IPO_sub$netIncome)
+IPO_sub$lastFiscalYearGrowth<-as.numeric(IPO_sub$lastFiscalYearGrowth)
+IPO_sub$employees<-as.numeric(IPO_sub$employees)
+IPO_sub$daysProfitGrouped<-as.factor((IPO_sub$daysProfitGrouped))
+IPO_sub$Sector<-as.factor((IPO_sub$Sector))
+IPO_sub$Industry<-as.factor((IPO_sub$Industry))
+summary(IPO_sub)
+```
+
+```{r}
+data<-select(IPO_sub,DaysBetterThanSP,daysProfit,exactDiffernce,LastSale,MarketCap,CEOAge,PresidentAge,Revenue,netIncome,lastFiscalYearGrowth,employees)
+summary(data)
+```
+
+```{r}
+library(pcalg)
+suff_stat <- list(C = cor(data), n = nrow(data))
+pc_data <- pc(suff_stat, indepTest = gaussCItest, labels = colnames(data), alpha = 0.05, skel.method = "stable.fast")
+plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
+```
+
+```{r,eval=FALSE}
+m1 = coxph( Surv( exactDiffernce) ~ DaysBetterThanSP , data=IPO_sub )
+plot( cox.zph(m1) )
+
+m2 = coxph( Surv( exactDiffernce) ~ daysProfit , data=IPO_sub )
+plot( cox.zph(m2) )
+
+m3 = coxph( Surv( exactDiffernce) ~ Revenue , data=IPO_sub )
+plot( cox.zph(m3) )
+
+m4 = coxph( Surv( exactDiffernce) ~ netIncome , data=IPO_sub )
+plot( cox.zph(m4) )
+
+m5 = coxph( Surv( exactDiffernce) ~ CEOAge , data=IPO_sub )
+plot( cox.zph(m5) )
+
+m6 = coxph( Surv( exactDiffernce) ~ PresidentAge , data=IPO_sub )
+plot( cox.zph(m6) )
+
+m7 = coxph( Surv( exactDiffernce) ~ lastFiscalYearGrowth , data=IPO_sub )
+plot( cox.zph(m7) )
+
+m8 = coxph( Surv( exactDiffernce) ~ employees , data=IPO_sub )
+plot( cox.zph(m8) )
+```
+
+```{r}
+library(ggplot2)
+ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce))+geom_point()+geom_smooth()
+```
+
+```{r}
+ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+
+# Alternatively
+ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce)) +
+    geom_boxplot() +
+    facet_grid(~daysProfitGrouped)
 ```
 
