@@ -60,8 +60,14 @@ IPO = subset(IPO, select = -exactDateFounded)
 ```
 
 ```{r}
+# create DaysToIPO, IPOYear and YearsToIPO
+IPO$DaysToIPO = as.numeric(difftime(IPO$IPODate, IPO$DateFounded, units = "days"))
+IPO$IPOYear = format(IPO$IPODate,"%Y")
+IPO$YearsToIPO = as.numeric(IPO$IPOYear) - as.numeric(IPO$YearFounded)
+# Filter out negative DaysToIPO
+IPO = IPO %>% filter(DaysToIPO >= 0)
 # look again
-IPO %>% select(c("IPODate", "YearFounded", "DateFounded","exactDiffernce"))
+IPO %>% select(c("IPOYear", "IPODate", "YearFounded", "DateFounded", "DaysToIPO", "YearsToIPO"))
 ```
 
 ```{r}
