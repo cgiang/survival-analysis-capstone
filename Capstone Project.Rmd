@@ -20,14 +20,14 @@ defaultDay = "15"
 defaultDate ="06-30"
 ```
 
-```{r}
+```{r,results='hide'}
 # drop na in YearFounded
 IPO = IPO[!is.na(IPO$YearFounded),]
 # look at original datetime format
 IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
 ```
 
-```{r}
+```{r,results='hide'}
 # reformat ipoDate into IPODate
 IPO$IPODate = as.Date(IPO$ipoDate,format='%m/%d/%y %H:%M')
 # drop ipoDate
@@ -153,16 +153,37 @@ plot( cox.zph(m7) )
 
 m8 = coxph( Surv( DaysToIPO) ~ employees , data=IPO_sub )
 plot( cox.zph(m8) )
+
+m9 = coxph( Surv( DaysToIPO) ~ LastSale , data=IPO_sub )
+plot( cox.zph(m9) )
+
+m10 = coxph( Surv( DaysToIPO) ~ MarketCap , data=IPO_sub )
+plot( cox.zph(m10) )
+```
+
+```{r}
+cox.zph(m1) ## <  0.05
+cox.zph(m2) ## >  0.05
+cox.zph(m3) ## >  0.05
+cox.zph(m4) ## >  0.05
+cox.zph(m5) ## <  0.05
+cox.zph(m6) ## <  0.05
+cox.zph(m7) ## <  0.05
+cox.zph(m8) ## <  0.05
+cox.zph(m9) ## >  0.05
+cox.zph(m10) ## <  0.05
 ```
 
 ```{r}
 library(ggplot2)
 ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=daysProfit,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO))+geom_point()+geom_smooth()
 ```
 
 ```{r}
-##ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
 
 # Alternatively
 ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO)) +
@@ -170,3 +191,59 @@ ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO)) +
     facet_grid(~daysProfitGrouped)
 ```
 
+```{r}
+ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+
+# Alternatively
+ggplot(IPO_sub,aes(x=MarketCap,y=DaysToIPO)) +
+    geom_boxplot() +
+    facet_grid(~daysProfitGrouped)
+```
+
+```{r}
+ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+
+# Alternatively
+ggplot(IPO_sub,aes(x=LastSale,y=DaysToIPO)) +
+    geom_boxplot() +
+    facet_grid(~daysProfitGrouped)
+```
+
+### Some models
+
+```{r}
+md1=coxph(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub)
+summary(md1)
+```
+
+```{r}
+md2=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="gaussian")
+summary(md2)
+```
+
+```{r}
+md3=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="exponential")
+summary(md3)
+```
+
+```{r}
+md4=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="weibull")
+summary(md4)
+```
+
+```{r}
+md5=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="lognormal")
+summary(md5)
+```
+
+### Model comparison
+
+```{r}
+
+```
+
+## YearsToIPO as time
+
+```{r}
+
+```
