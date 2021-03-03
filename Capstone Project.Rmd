@@ -14,11 +14,10 @@ IPO = read.csv("IPODataFull.csv")
 
 ```{r}
 # fix typo
-#IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
+# IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
 IPO[1040,"YearFounded"]=2011
 IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
 ```
-
 
 ## Data Cleaning
 
@@ -33,7 +32,7 @@ defaultDate ="06-30"
 # drop na in YearFounded
 IPO = IPO[!is.na(IPO$YearFounded),]
 # look at original datetime format
-#IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
+# IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
 ```
 
 ```{r,results='hide'}
@@ -42,7 +41,7 @@ IPO$IPODate = as.Date(IPO$ipoDate,format='%m/%d/%y %H:%M')
 # drop ipoDate
 IPO = subset(IPO, select = -ipoDate)
 # look again
-#IPO %>% select(c("IPODate", "YearFounded", "exactDateFounded"))
+# IPO %>% select(c("IPODate", "YearFounded", "exactDateFounded"))
 ```
 
 ```{r}
@@ -76,14 +75,13 @@ IPO$YearsToIPO = as.numeric(IPO$IPOYear) - as.numeric(IPO$YearFounded)
 # Filter out negative DaysToIPO
 IPO = IPO %>% filter(DaysToIPO >= 0)
 # look again
-#IPO %>% select(c("IPOYear", "IPODate", "YearFounded", "DateFounded", "DaysToIPO", "YearsToIPO"))
+# IPO %>% select(c("IPOYear", "IPODate", "YearFounded", "DateFounded", "DaysToIPO", "YearsToIPO"))
 ```
 
 ```{r}
 # subset of the original data set without TVC or anything after Fiscal_year
 IPO_sub <- select (IPO, Symbol, DaysToIPO, YearsToIPO, DaysBetterThanSP, daysProfit, daysProfitGrouped, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, CEOGender, PresidentAge, Revenue, netIncome, lastFiscalYearGrowth, employees)
 ```
-
 
 ```{r}
 # make numeric Revenue
@@ -247,12 +245,210 @@ summary(md5)
 
 ### Model comparison
 
-```{r}
+#### weibull vs normal (weibull)
 
+```{r}
+# LRT
+ts=2*(-22640.2-(-25472.9))
+1-pchisq(ts,0)
+
+# AIC
+2*(6-(-22640.2))
+2*(6-(-25472.9))
 ```
+
+#### weibull vs exponential (weibull)
+
+```{r}
+# LRT
+ts=2*(-22640.2-(-23139.4))
+1-pchisq(ts,1)
+
+# AIC
+2*(6-(-22640.2))
+2*(5-(-23139.4))
+```
+
+#### weibull vs log-normal (weibull)
+
+```{r}
+# LRT
+ts=2*(-22640.2-(-22844.8))
+1-pchisq(ts,0)
+
+# AIC
+2*(6-(-22640.2))
+2*(6-(-22844.8))
+```
+
+#### normal vs exponential (exponential)
+
+```{r}
+# AIC
+2*(6-(-25472.9))
+2*(5-(-23139.4))
+```
+
+#### normal vs log-normal (log-normal)
+
+```{r}
+# LRT - WHICH IS MORE COMPLEX???
+
+# AIC
+2*(6-(-25472.9))
+2*(6-(-22844.8))
+```
+
+#### exponential vs log-normal (log-normal)
+
+```{r}
+# AIC
+2*(5-(-23139.4))
+2*(6-(-22844.8))
+```
+
+#### HOW TO COMPARE WITH PH MODEL???
 
 ## YearsToIPO as time
 
 ```{r}
+ym1 = coxph( Surv( YearsToIPO) ~ DaysBetterThanSP , data=IPO_sub )
+plot( cox.zph(ym1) )
 
+ym2 = coxph( Surv( YearsToIPO) ~ daysProfit , data=IPO_sub )
+plot( cox.zph(ym2) )
+
+ym3 = coxph( Surv( YearsToIPO) ~ Revenue , data=IPO_sub )
+plot( cox.zph(ym3) )
+
+ym4 = coxph( Surv( YearsToIPO) ~ netIncome , data=IPO_sub )
+plot( cox.zph(ym4) )
+
+ym5 = coxph( Surv( YearsToIPO) ~ CEOAge , data=IPO_sub )
+plot( cox.zph(ym5) )
+
+ym6 = coxph( Surv( YearsToIPO) ~ PresidentAge , data=IPO_sub )
+plot( cox.zph(ym6) )
+
+ym7 = coxph( Surv( YearsToIPO) ~ lastFiscalYearGrowth , data=IPO_sub )
+plot( cox.zph(ym7) )
+
+ym8 = coxph( Surv( YearsToIPO) ~ employees , data=IPO_sub )
+plot( cox.zph(ym8) )
+
+ym9 = coxph( Surv( YearsToIPO) ~ LastSale , data=IPO_sub )
+plot( cox.zph(ym9) )
+
+ym10 = coxph( Surv( YearsToIPO) ~ MarketCap , data=IPO_sub )
+plot( cox.zph(ym10) )
 ```
+
+```{r}
+cox.zph(ym1) ## <  0.05
+cox.zph(ym2) ## >  0.05
+cox.zph(ym3) ## >  0.05
+cox.zph(ym4) ## >  0.05
+cox.zph(ym5) ## <  0.05
+cox.zph(ym6) ## <  0.05
+cox.zph(ym7) ## <  0.05
+cox.zph(ym8) ## <  0.05
+cox.zph(ym9) ## >  0.05
+cox.zph(ym10) ## <  0.05
+```
+
+### Some models
+
+```{r}
+ymd1=coxph(Surv(YearsToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub)
+summary(ymd1)
+```
+
+```{r}
+ymd2=survreg(Surv(YearsToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="gaussian")
+summary(ymd2)
+```
+
+```{r}
+ymd3=survreg(Surv(YearsToIPO+0.0001)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="exponential")
+summary(ymd3)
+```
+
+```{r}
+ymd4=survreg(Surv(YearsToIPO+0.0001)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="weibull")
+summary(ymd4)
+```
+
+```{r}
+ymd5=survreg(Surv(YearsToIPO+0.0001)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="lognormal")
+summary(ymd5)
+```
+
+### Model comparison
+
+#### weibull vs normal (weibull)
+
+```{r}
+# LRT
+ts=2*(-7243.1-(-11323.5))
+1-pchisq(ts,0)
+
+# AIC
+2*(6-(-7243.1))
+2*(6-(-11323.5))
+```
+
+#### weibull vs exponential (weibull)
+
+```{r}
+# LRT
+ts=2*(-7243.1-(-8984.5))
+1-pchisq(ts,1)
+
+# AIC
+2*(6-(-7243.1))
+2*(5-(-8984.5))
+```
+
+#### weibull vs log-normal (weibull)
+
+```{r}
+# LRT
+ts=2*(-7243.1-(-7952.4))
+1-pchisq(ts,0)
+
+# AIC
+2*(6-(-7243.1))
+2*(6-(-7952.4))
+```
+
+#### normal vs exponential (exponential)
+
+```{r}
+# AIC
+2*(6-(-11323.5))
+2*(5-(-8984.5))
+```
+
+#### normal vs log-normal (log-normal)
+
+```{r}
+# LRT - WHICH IS MORE COMPLEX???
+
+# AIC
+2*(6-(-11323.5))
+2*(6-(-7952.4))
+```
+
+#### exponential vs log-normal (log-normal)
+
+```{r}
+# AIC
+2*(5-(-8984.5))
+2*(6-(-7952.4))
+```
+
+#### HOW TO COMPARE WITH PH MODEL???
+
+
+
+
