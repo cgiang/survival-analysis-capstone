@@ -11,6 +11,14 @@ library(dplyr)
 IPO = read.csv("IPODataFull.csv")
 ```
 
+```{r}
+# fix typo
+#IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
+IPO[1040,"YearFounded"]=2011
+IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
+```
+
+
 ## Data Cleaning
 
 ```{r}
@@ -24,7 +32,7 @@ defaultDate ="06-30"
 # drop na in YearFounded
 IPO = IPO[!is.na(IPO$YearFounded),]
 # look at original datetime format
-IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
+#IPO %>% select(c("ipoDate", "YearFounded", "exactDateFounded"))
 ```
 
 ```{r,results='hide'}
@@ -33,7 +41,7 @@ IPO$IPODate = as.Date(IPO$ipoDate,format='%m/%d/%y %H:%M')
 # drop ipoDate
 IPO = subset(IPO, select = -ipoDate)
 # look again
-IPO %>% select(c("IPODate", "YearFounded", "exactDateFounded"))
+#IPO %>% select(c("IPODate", "YearFounded", "exactDateFounded"))
 ```
 
 ```{r}
@@ -67,12 +75,12 @@ IPO$YearsToIPO = as.numeric(IPO$IPOYear) - as.numeric(IPO$YearFounded)
 # Filter out negative DaysToIPO
 IPO = IPO %>% filter(DaysToIPO >= 0)
 # look again
-IPO %>% select(c("IPOYear", "IPODate", "YearFounded", "DateFounded", "DaysToIPO", "YearsToIPO"))
+#IPO %>% select(c("IPOYear", "IPODate", "YearFounded", "DateFounded", "DaysToIPO", "YearsToIPO"))
 ```
 
 ```{r}
 # subset of the original data set without TVC or anything after Fiscal_year
-IPO_sub <- select (IPO, DaysToIPO, YearsToIPO, DaysBetterThanSP, daysProfit, daysProfitGrouped, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, PresidentAge, Revenue, netIncome, lastFiscalYearGrowth, employees)
+IPO_sub <- select (IPO, Symbol, DaysToIPO, YearsToIPO, DaysBetterThanSP, daysProfit, daysProfitGrouped, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, CEOGender, PresidentAge, Revenue, netIncome, lastFiscalYearGrowth, employees)
 ```
 
 
@@ -106,7 +114,7 @@ for (i in 1:nrow(IPO_sub)){
 }
 ```
 
-```{r,message=FALSE}
+```{r,message=FALSE, warning=FALSE}
 IPO_sub$Revenue<-as.numeric(IPO_sub$Revenue)
 IPO_sub$netIncome<-as.numeric(IPO_sub$netIncome)
 IPO_sub$lastFiscalYearGrowth<-as.numeric(IPO_sub$lastFiscalYearGrowth)
@@ -114,11 +122,13 @@ IPO_sub$employees<-as.numeric(IPO_sub$employees)
 IPO_sub$daysProfitGrouped<-as.factor((IPO_sub$daysProfitGrouped))
 IPO_sub$Sector<-as.factor((IPO_sub$Sector))
 IPO_sub$Industry<-as.factor((IPO_sub$Industry))
+IPO_sub$Symbol<-as.factor(IPO_sub$Symbol)
+IPO_sub$CEOGender<- as.factor(IPO_sub$CEOGender)
 summary(IPO_sub)
 ```
 
 ```{r, message=FALSE}
-data<-select(IPO_sub,-Sector,-Industry,-daysProfitGrouped)
+data<-select(IPO_sub,-Sector,-Industry,-daysProfitGrouped, -CEOGender, -Symbol)
 library(pcalg)
 suff_stat <- list(C = cor(data), n = nrow(data))
 pc_data <- pc(suff_stat, indepTest = gaussCItest, labels = colnames(data), alpha = 0.05, skel.method = "stable.fast")
@@ -222,17 +232,17 @@ summary(md2)
 ```
 
 ```{r}
-md3=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="exponential")
+md3=survreg(Surv(DaysToIPO+0.0001)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="exponential")
 summary(md3)
 ```
 
 ```{r}
-md4=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="weibull")
+md4=survreg(Surv(DaysToIPO+0.0001)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="weibull")
 summary(md4)
 ```
 
 ```{r}
-md5=survreg(Surv(DaysToIPO)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="lognormal")
+md5=survreg(Surv(DaysToIPO+0.0001)~daysProfit+Revenue+netIncome+LastSale,data=IPO_sub,dist="lognormal")
 summary(md5)
 ```
 
