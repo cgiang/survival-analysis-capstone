@@ -72,7 +72,7 @@ IPO %>% select(c("IPOYear", "IPODate", "YearFounded", "DateFounded", "DaysToIPO"
 
 ```{r}
 # subset of the original data set without TVC or anything after Fiscal_year
-IPO_sub <- select (IPO, IPODate, YearFounded, DateFounded, Symbol, DaysBetterThanSP, daysProfit, daysProfitGrouped, exactDiffernce, Name, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, PresidentAge, Revenue, netIncome,  lastFiscalYearGrowth, employees)
+IPO_sub <- select (IPO, DaysToIPO, YearsToIPO, DaysBetterThanSP, daysProfit, daysProfitGrouped, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, PresidentAge, Revenue, netIncome, lastFiscalYearGrowth, employees)
 ```
 
 
@@ -106,7 +106,7 @@ for (i in 1:nrow(IPO_sub)){
 }
 ```
 
-```{r}
+```{r,message=FALSE}
 IPO_sub$Revenue<-as.numeric(IPO_sub$Revenue)
 IPO_sub$netIncome<-as.numeric(IPO_sub$netIncome)
 IPO_sub$lastFiscalYearGrowth<-as.numeric(IPO_sub$lastFiscalYearGrowth)
@@ -117,55 +117,55 @@ IPO_sub$Industry<-as.factor((IPO_sub$Industry))
 summary(IPO_sub)
 ```
 
-```{r}
-data<-select(IPO_sub,DaysBetterThanSP,daysProfit,exactDiffernce,LastSale,MarketCap,CEOAge,PresidentAge,Revenue,netIncome,lastFiscalYearGrowth,employees)
-summary(data)
-```
-
-```{r}
+```{r, message=FALSE}
+data<-select(IPO_sub,-Sector,-Industry,-daysProfitGrouped)
 library(pcalg)
 suff_stat <- list(C = cor(data), n = nrow(data))
 pc_data <- pc(suff_stat, indepTest = gaussCItest, labels = colnames(data), alpha = 0.05, skel.method = "stable.fast")
 plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
 ```
 
+## DaysToIPO as time
+
 ```{r,eval=FALSE}
-m1 = coxph( Surv( exactDiffernce) ~ DaysBetterThanSP , data=IPO_sub )
+library(survival)
+
+m1 = coxph( Surv( DaysToIPO) ~ DaysBetterThanSP , data=IPO_sub )
 plot( cox.zph(m1) )
 
-m2 = coxph( Surv( exactDiffernce) ~ daysProfit , data=IPO_sub )
+m2 = coxph( Surv( DaysToIPO) ~ daysProfit , data=IPO_sub )
 plot( cox.zph(m2) )
 
-m3 = coxph( Surv( exactDiffernce) ~ Revenue , data=IPO_sub )
+m3 = coxph( Surv( DaysToIPO) ~ Revenue , data=IPO_sub )
 plot( cox.zph(m3) )
 
-m4 = coxph( Surv( exactDiffernce) ~ netIncome , data=IPO_sub )
+m4 = coxph( Surv( DaysToIPO) ~ netIncome , data=IPO_sub )
 plot( cox.zph(m4) )
 
-m5 = coxph( Surv( exactDiffernce) ~ CEOAge , data=IPO_sub )
+m5 = coxph( Surv( DaysToIPO) ~ CEOAge , data=IPO_sub )
 plot( cox.zph(m5) )
 
-m6 = coxph( Surv( exactDiffernce) ~ PresidentAge , data=IPO_sub )
+m6 = coxph( Surv( DaysToIPO) ~ PresidentAge , data=IPO_sub )
 plot( cox.zph(m6) )
 
-m7 = coxph( Surv( exactDiffernce) ~ lastFiscalYearGrowth , data=IPO_sub )
+m7 = coxph( Surv( DaysToIPO) ~ lastFiscalYearGrowth , data=IPO_sub )
 plot( cox.zph(m7) )
 
-m8 = coxph( Surv( exactDiffernce) ~ employees , data=IPO_sub )
+m8 = coxph( Surv( DaysToIPO) ~ employees , data=IPO_sub )
 plot( cox.zph(m8) )
 ```
 
 ```{r}
 library(ggplot2)
-ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO))+geom_point()+geom_smooth()
 ```
 
 ```{r}
-ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+##ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
 
 # Alternatively
-ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=exactDiffernce)) +
+ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO)) +
     geom_boxplot() +
     facet_grid(~daysProfitGrouped)
 ```
