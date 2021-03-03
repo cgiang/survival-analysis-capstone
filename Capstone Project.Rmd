@@ -5,6 +5,7 @@ output: html_document
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
+library(survival)
 ```
 
 ```{r}
@@ -137,9 +138,7 @@ plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
 
 ## DaysToIPO as time
 
-```{r,eval=FALSE}
-library(survival)
-
+```{r}
 m1 = coxph( Surv( DaysToIPO) ~ DaysBetterThanSP , data=IPO_sub )
 plot( cox.zph(m1) )
 
