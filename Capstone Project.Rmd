@@ -95,7 +95,7 @@ IPO = IPO %>% filter(DaysToIPO >= 0)
 
 ```{r}
 # subset of the original data set without TVC or anything after Fiscal_year
-IPO_sub <- select (IPO, Symbol, DaysToIPO, YearsToIPO, DaysBetterThanSP, daysProfit, daysProfitGrouped, LastSale, MarketCap, Sector, Industry, CEOTakeOver, CEOAge, CEOGender, PresidentAge, Revenue, netIncome, lastFiscalYearGrowth, employees)
+IPO_sub <- select (IPO, DaysToIPO, YearsToIPO, LastSale, Sector, Industry, CEOTakeOver, CEOAge, CEOGender, PresidentAge, Revenue, netIncome, lastFiscalYearGrowth, employees)
 ```
 
 ```{r}
@@ -133,10 +133,8 @@ IPO_sub$Revenue<-as.numeric(IPO_sub$Revenue)
 IPO_sub$netIncome<-as.numeric(IPO_sub$netIncome)
 IPO_sub$lastFiscalYearGrowth<-as.numeric(IPO_sub$lastFiscalYearGrowth)
 IPO_sub$employees<-as.numeric(IPO_sub$employees)
-IPO_sub$daysProfitGrouped<-as.factor((IPO_sub$daysProfitGrouped))
 IPO_sub$Sector<-as.factor((IPO_sub$Sector))
 IPO_sub$Industry<-as.factor((IPO_sub$Industry))
-IPO_sub$Symbol<-as.factor(IPO_sub$Symbol)
 IPO_sub$CEOGender<- as.factor(IPO_sub$CEOGender)
 summary(IPO_sub)
 ```
@@ -144,7 +142,7 @@ summary(IPO_sub)
 ## Exploratory Analysis 
 
 ```{r, message=FALSE, fig.height=7}
-data<-select(IPO_sub,-Sector,-Industry,-daysProfitGrouped, -CEOGender, -Symbol)
+data<-select(IPO_sub,-Sector,-Industry,-CEOGender)
 library(pcalg)
 suff_stat <- list(C = cor(data), n = nrow(data))
 pc_data <- pc(suff_stat, indepTest = gaussCItest, labels = colnames(data), alpha = 0.05, skel.method = "stable.fast")
@@ -153,15 +151,12 @@ plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
 
 ```{r}
 library(ggplot2)
-#ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO))+geom_point()+geom_smooth()
-#ggplot(data=IPO_sub,aes(x=daysProfit,y=DaysToIPO))+geom_point()+geom_smooth()
 #ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()
 ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 35.9800)+ylim(0,40000)
 #ggplot(data=IPO_sub,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()
 ggplot(data=IPO_sub,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 1.625e+09)+ylim(0,40000)
 #ggplot(data=IPO_sub,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()
 ggplot(data=IPO_sub,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 3860)+ylim(0,40000)
-#ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO))+geom_point()+geom_smooth()
 ```
 
 ```{r}
@@ -176,12 +171,13 @@ ggplot(data=IPO_sub2,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()
 ```
 
 ```{r fig.width=9, fig.height=6}
-# ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
-
-# Alternatively
-# ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO)) +
+# ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO,color=factor(Sector)))+geom_point()+geom_smooth()
+# 
+# # Alternatively
+# ggplot(IPO_sub,aes(x=LastSale,y=DaysToIPO)) +
 #     geom_boxplot() +
-#     facet_grid(~daysProfitGrouped)
+#     facet_grid(~Sector)
+
 ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO)) +
   geom_boxplot() + 
   theme(axis.text.x = element_text(angle = 90))
@@ -190,15 +186,6 @@ ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO)) +
 # ggplot(IPO_sub3,aes(x=CEOGender,y=DaysToIPO)) +
 #   geom_boxplot() + 
 #   theme(axis.text.x = element_text(angle = 90))
-```
-
-```{r}
-# ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
-
-# Alternatively
-# ggplot(IPO_sub,aes(x=MarketCap,y=DaysToIPO)) +
-#     geom_boxplot() +
-#     facet_grid(~daysProfitGrouped)
 ```
 
 ```{r}
@@ -299,13 +286,34 @@ cox.zph(m9) ## >  0.05
 #cox.zph(m16) ## <  0.05
 ```
 
+# Testing more covariates - start
+
+```{r}
+coxph(Surv(DaysToIPO)~LastSale+employees+strata(Industry)+strata(Sector)+strata(CEOGender)+CEOAge+PresidentAge+Revenue+netIncome+lastFiscalYearGrowth,data=IPO_sub)
+```
+
+```{r}
+coxph(Surv(DaysToIPO)~CEOAge,data=IPO_sub) # significant
+coxph(Surv(DaysToIPO)~PresidentAge,data=IPO_sub) # significant
+# coxph(Surv(DaysToIPO)~netIncome,data=IPO_sub) # insignificant
+# coxph(Surv(DaysToIPO)~lastFiscalYearGrowth,data=IPO_sub) # insignificant
+```
+
+```{r}
+summary(survreg(Surv(DaysToIPO+0.0001)~LastSale+employees+factor(Sector)+CEOAge,data=IPO_sub,dist="weibull")) 
+# significant? -- see below
+# should we include CEOAge?
+```
+
+# Testing more covariates - end
+
 ```{r}
 coxph(Surv(DaysToIPO)~LastSale,data=IPO_sub) # significant
 ```
 
 ```{r}
 coxph(Surv(DaysToIPO)~employees,data=IPO_sub) # significant
-#coxph(Surv(DaysToIPO)~Revenue,data=IPO_sub) # not significant
+# coxph(Surv(DaysToIPO)~Revenue,data=IPO_sub) # not significant
 ```
 
 ```{r}
