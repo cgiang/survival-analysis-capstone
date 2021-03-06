@@ -3,12 +3,10 @@ title: "Capstone Project"
 output: html_document
 ---
 
-
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
 library(survival)
 ```
-
 
 ```{r}
 # for checking distribution
@@ -33,7 +31,7 @@ IPO = read.csv("IPODataFull.csv")
 # fix typo
 # IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
 IPO[1040,"YearFounded"]=2011
-#IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
+# IPO[IPO$Symbol=="EGL",]%>% select(c("exactDateFounded", "YearFounded"))
 ```
 
 ## Data Cleaning
@@ -145,7 +143,7 @@ summary(IPO_sub)
 
 ## Exploratory Analysis 
 
-```{r, message=FALSE}
+```{r, message=FALSE, fig.height=7}
 data<-select(IPO_sub,-Sector,-Industry,-daysProfitGrouped, -CEOGender, -Symbol)
 library(pcalg)
 suff_stat <- list(C = cor(data), n = nrow(data))
@@ -153,14 +151,16 @@ pc_data <- pc(suff_stat, indepTest = gaussCItest, labels = colnames(data), alpha
 plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
 ```
 
-
 ```{r}
 library(ggplot2)
 #ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO))+geom_point()+geom_smooth()
 #ggplot(data=IPO_sub,aes(x=daysProfit,y=DaysToIPO))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()
+#ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 35.9800)+ylim(0,40000)
+#ggplot(data=IPO_sub,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 1.625e+09)+ylim(0,40000)
+#ggplot(data=IPO_sub,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()
+ggplot(data=IPO_sub,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 3860)+ylim(0,40000)
 #ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO))+geom_point()+geom_smooth()
 ```
 
@@ -176,38 +176,38 @@ ggplot(data=IPO_sub2,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()
 ```
 
 ```{r fig.width=9, fig.height=6}
-#ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+# ggplot(data=IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
 
 # Alternatively
-#ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO)) +
-#    geom_boxplot() +
-#    facet_grid(~daysProfitGrouped)
+# ggplot(IPO_sub,aes(x=DaysBetterThanSP,y=DaysToIPO)) +
+#     geom_boxplot() +
+#     facet_grid(~daysProfitGrouped)
 ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO)) +
   geom_boxplot() + 
   theme(axis.text.x = element_text(angle = 90))
 
 # no clear trend 
-#ggplot(IPO_sub3,aes(x=CEOGender,y=DaysToIPO)) +
-#  geom_boxplot() + 
-#  theme(axis.text.x = element_text(angle = 90))
+# ggplot(IPO_sub3,aes(x=CEOGender,y=DaysToIPO)) +
+#   geom_boxplot() + 
+#   theme(axis.text.x = element_text(angle = 90))
 ```
 
 ```{r}
-#ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+# ggplot(data=IPO_sub,aes(x=MarketCap,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
 
 # Alternatively
-#ggplot(IPO_sub,aes(x=MarketCap,y=DaysToIPO)) +
-#    geom_boxplot() +
-#    facet_grid(~daysProfitGrouped)
+# ggplot(IPO_sub,aes(x=MarketCap,y=DaysToIPO)) +
+#     geom_boxplot() +
+#     facet_grid(~daysProfitGrouped)
 ```
 
 ```{r}
-#ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
+# ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
 
 # Alternatively
-#ggplot(IPO_sub,aes(x=LastSale,y=DaysToIPO)) +
-#    geom_boxplot() +
-#    facet_grid(~daysProfitGrouped)
+# ggplot(IPO_sub,aes(x=LastSale,y=DaysToIPO)) +
+#     geom_boxplot() +
+#     facet_grid(~daysProfitGrouped)
 ```
 
 #### Check interactions
@@ -215,12 +215,11 @@ ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO)) +
 ```{r fig.width=9, fig.height=6}
 # No interaction effect with Sector or CEOGender
 
-#ggplot(IPO_sub,aes(x=Sector,y=employees)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-#ggplot(IPO_sub,aes(x=Sector,y=LastSale)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-#ggplot(IPO_sub,aes(x=Sector,y=Revenue)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-#ggplot(IPO_sub3,aes(x=CEOGender,y=LastSale)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
+# ggplot(IPO_sub,aes(x=Sector,y=employees)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
+# ggplot(IPO_sub,aes(x=Sector,y=LastSale)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
+# ggplot(IPO_sub,aes(x=Sector,y=Revenue)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
+# ggplot(IPO_sub3,aes(x=CEOGender,y=LastSale)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
 ```
-
 
 ## Modeling with DaysToIPO 
 
@@ -230,11 +229,11 @@ ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO)) +
 # m1, m2 and m10 happen after IPO so they're commented out 
 # the rest are commented out bc they violate the PH assumption 
 
-###m1 = coxph( Surv( DaysToIPO) ~ DaysBetterThanSP , data=IPO_sub )
-###plot( cox.zph(m1) )
+#m1 = coxph( Surv( DaysToIPO) ~ DaysBetterThanSP , data=IPO_sub )
+#plot( cox.zph(m1) )
 
-###m2 = coxph( Surv( DaysToIPO) ~ daysProfit , data=IPO_sub )
-###plot( cox.zph(m2) )
+#m2 = coxph( Surv( DaysToIPO) ~ daysProfit , data=IPO_sub )
+#plot( cox.zph(m2) )
 
 m3 = coxph( Surv( DaysToIPO) ~ Revenue , data=IPO_sub )
 plot( cox.zph(m3) )
@@ -257,8 +256,8 @@ plot( cox.zph(m4) )
 m9 = coxph( Surv( DaysToIPO) ~ LastSale , data=IPO_sub )
 plot( cox.zph(m9) )
 
-###m10 = coxph( Surv( DaysToIPO) ~ MarketCap , data=IPO_sub )
-###plot( cox.zph(m10) )
+#m10 = coxph( Surv( DaysToIPO) ~ MarketCap , data=IPO_sub )
+#plot( cox.zph(m10) )
 
 #m11 = coxph( Surv( DaysToIPO) ~ Sector , data=IPO_sub )
 #plot( cox.zph(m11) )
@@ -282,8 +281,8 @@ plot( cox.zph(m9) )
 ```{r}
 # only m3, m4, m9 (Revenue, netIncome, LastSale satisfy the PH assumption)
 
-###cox.zph(m1) ## <  0.05
-###cox.zph(m2) ## >  0.05
+#cox.zph(m1) ## <  0.05
+#cox.zph(m2) ## >  0.05
 cox.zph(m3) ## >  0.05
 cox.zph(m4) ## >  0.05
 #cox.zph(m5) ## <  0.05
@@ -291,7 +290,7 @@ cox.zph(m4) ## >  0.05
 #cox.zph(m7) ## <  0.05
 #cox.zph(m8) ## <  0.05
 cox.zph(m9) ## >  0.05
-###cox.zph(m10) ## <  0.05
+#cox.zph(m10) ## <  0.05
 #cox.zph(m11) ## <  0.05
 #cox.zph(m12) ## <  0.05
 #cox.zph(m13) ## <  0.05
@@ -304,23 +303,24 @@ cox.zph(m9) ## >  0.05
 coxph(Surv(DaysToIPO)~LastSale,data=IPO_sub) # significant
 ```
 
-
 ```{r}
 coxph(Surv(DaysToIPO)~employees,data=IPO_sub) # significant
 #coxph(Surv(DaysToIPO)~Revenue,data=IPO_sub) # not significant
 ```
 
 ```{r}
-coxph(Surv(DaysToIPO)~LastSale+employees,data=IPO_sub) # significant
-coxph(Surv(DaysToIPO)~LastSale+employees+strata(Sector),data=IPO_sub) # significant
-coxph(Surv(DaysToIPO)~LastSale+employees+strata(Industry),data=IPO_sub) # significant
+#coxph(Surv(DaysToIPO)~LastSale+employees,data=IPO_sub) # significant
+coxph(Surv(DaysToIPO)~LastSale+strata(employees),data=IPO_sub) # insignificant
+#coxph(Surv(DaysToIPO)~LastSale+employees+strata(Sector),data=IPO_sub) # significant
+coxph(Surv(DaysToIPO)~LastSale+strata(employees)+strata(Sector),data=IPO_sub) # insignificant
+#coxph(Surv(DaysToIPO)~LastSale+employees+strata(Industry),data=IPO_sub) # significant
+coxph(Surv(DaysToIPO)~LastSale+strata(employees)+strata(Industry),data=IPO_sub) # insignificant
 ```
 
 ```{r}
 summary(survreg(Surv(DaysToIPO+0.0001)~LastSale+employees+factor(Sector),data=IPO_sub,dist="weibull")) 
 # significant? -- see below
 ```
-
 
 ```{r}
 summary(survreg(Surv(DaysToIPO)~employees+CEOAge,data=IPO_sub,dist="gaussian")) # significant
@@ -333,7 +333,6 @@ IPO_sub4 = cbind(IPO_sub)
 IPO_sub4$employees[is.na(IPO_sub4$employees)] = mean(IPO_sub4$employees, na.rm = TRUE)
 IPO_sub4$CEOAge[is.na(IPO_sub4$CEOAge)] = mean(IPO_sub4$CEOAge, na.rm = TRUE)
 ```
-
 
 ```{r}
 # normal distribution is not appropriate
@@ -351,7 +350,6 @@ CS = -log( 1 - pexp( IPO_sub4$DaysToIPO , 1/exp(7.40+1.36e-05*IPO_sub4$employees
 CoxSnell( CS , rep(1,nrow(IPO_sub4)) )
 ```
 
-
 ```{r}
 summary(survreg(Surv(DaysToIPO+0.0001)~employees+CEOAge,data=IPO_sub,dist="weibull")) # significant
 ```
@@ -363,7 +361,6 @@ CS = -log( 1 - pweibull( IPO_sub4$DaysToIPO ,
                          scale = exp(7.21+1.15e-05*IPO_sub4$employees+1.86e-02*IPO_sub4$CEOAge)) ) 
 CoxSnell( CS , rep(1,nrow(IPO_sub4)) )
 ```
-
 
 ```{r}
 summary(survreg(Surv(DaysToIPO+0.0001)~employees+CEOAge,data=IPO_sub,dist="lognormal")) # CEOAge not significant
@@ -399,7 +396,6 @@ CoxSnell( CS , rep(1,nrow(IPO_sub4)) )
 #summary(md5)
 ```
 
-
 ### Model comparison
 
 #### is including Sector worthwhile? Yes
@@ -409,7 +405,6 @@ summary(survreg(Surv(DaysToIPO+0.0001)~LastSale+employees,data=IPO_sub,dist="wei
 summary(survreg(Surv(DaysToIPO+0.0001)~LastSale+employees+factor(Sector),data=IPO_sub,dist="weibull"))$loglik[2]
 1 - pchisq(2*(-22486.6+22555.74),12) # = 0
 ```
-
 
 #### weibull vs normal (weibull) 
 
@@ -473,7 +468,6 @@ agrees with CS plot
 2*(3-(loglik_exponential))
 2*(4-(loglik_lognormal))
 ```
-
 
 ## Modeling with YearsToIPO 
 
@@ -602,9 +596,3 @@ ts=2*(-7243.1-(-8984.5))
 2*(5-(-8984.5))
 2*(6-(-7952.4))
 ```
-
-
-
-
-
-
