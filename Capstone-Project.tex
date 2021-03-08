@@ -192,7 +192,7 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{LastSale,}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{()}\OperatorTok{+}\KeywordTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{35.9800}\NormalTok{)}\OperatorTok{+}\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{40000}\NormalTok{)}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{log}\NormalTok{(}\KeywordTok{log}\NormalTok{(LastSale)),}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha=}\FloatTok{0.3}\NormalTok{, }\DataTypeTok{col =}\StringTok{"blue"}\NormalTok{)}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{se=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\StringTok{"black"}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{40000}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{14}\NormalTok{),}\DataTypeTok{axis.title.y =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{14}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -200,23 +200,15 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Revenue,}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{()}\OperatorTok{+}\KeywordTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.625e+09}\NormalTok{)}\OperatorTok{+}\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{40000}\NormalTok{)}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{log}\NormalTok{(employees),}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha=}\FloatTok{0.3}\NormalTok{, }\DataTypeTok{col =}\StringTok{"blue"}\NormalTok{)}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{se=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\StringTok{"black"}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{40000}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{14}\NormalTok{),}\DataTypeTok{axis.title.y =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{14}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-15-2.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-16-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{employees,}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{()}\OperatorTok{+}\KeywordTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{3860}\NormalTok{)}\OperatorTok{+}\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{40000}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-15-3.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub2,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{LastSale,}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{()}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{log}\NormalTok{(Revenue),}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha=}\FloatTok{0.3}\NormalTok{, }\DataTypeTok{col =}\StringTok{"blue"}\NormalTok{)}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{se=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{,}\DataTypeTok{col=}\StringTok{"black"}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{40000}\NormalTok{)}\OperatorTok{+}\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.title.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{14}\NormalTok{),}\DataTypeTok{axis.title.y =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{14}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -224,25 +216,11 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub2,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Revenue,}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-17-2.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{IPO_sub2,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{employees,}\DataTypeTok{y=}\NormalTok{DaysToIPO))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}\KeywordTok{geom_smooth}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-17-3.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{ggplot}\NormalTok{(IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Sector,}\DataTypeTok{y=}\NormalTok{DaysToIPO)) }\OperatorTok{+}
-\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }
-\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{90}\NormalTok{))}
+\KeywordTok{ggplot}\NormalTok{(IPO_sub,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Sector,}\DataTypeTok{y=}\NormalTok{DaysToIPO,}\DataTypeTok{fill=}\NormalTok{Sector)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{(}\DataTypeTok{show.legend=}\OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{15000}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{axis.text.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{angle =} \DecValTok{90}\NormalTok{, }\DataTypeTok{size=}\DecValTok{12}\NormalTok{),}\DataTypeTok{axis.title.x =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{16}\NormalTok{),}\DataTypeTok{axis.title.y =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{size=}\DecValTok{16}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -261,7 +239,7 @@
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-22-1.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-19-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -270,7 +248,7 @@
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-22-2.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-19-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -279,7 +257,7 @@
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-22-3.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-19-3.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -321,26 +299,26 @@
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{coxph}\NormalTok{(}\KeywordTok{Surv}\NormalTok{(DaysToIPO)}\OperatorTok{~}\NormalTok{LastSale}\OperatorTok{+}\NormalTok{employees}\OperatorTok{+}\KeywordTok{strata}\NormalTok{(Industry)}\OperatorTok{+}\KeywordTok{strata}\NormalTok{(Sector)}\OperatorTok{+}\KeywordTok{strata}\NormalTok{(CEOGender)}\OperatorTok{+}\NormalTok{CEOAge}\OperatorTok{+}\NormalTok{PresidentAge}\OperatorTok{+}\NormalTok{Revenue}\OperatorTok{+}\NormalTok{netIncome}\OperatorTok{+}\NormalTok{lastFiscalYearGrowth,}\DataTypeTok{data=}\NormalTok{IPO_sub)}
+\KeywordTok{coxph}\NormalTok{(}\KeywordTok{Surv}\NormalTok{(DaysToIPO)}\OperatorTok{~}\NormalTok{LastSale}\OperatorTok{+}\NormalTok{employees}\OperatorTok{+}\KeywordTok{strata}\NormalTok{(Sector)}\OperatorTok{+}\KeywordTok{strata}\NormalTok{(CEOGender)}\OperatorTok{+}\NormalTok{CEOAge}\OperatorTok{+}\NormalTok{PresidentAge}\OperatorTok{+}\NormalTok{Revenue}\OperatorTok{+}\NormalTok{netIncome}\OperatorTok{+}\NormalTok{lastFiscalYearGrowth,}\DataTypeTok{data=}\NormalTok{IPO_sub)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
 ## Call:
-## coxph(formula = Surv(DaysToIPO) ~ LastSale + employees + strata(Industry) + 
-##     strata(Sector) + strata(CEOGender) + CEOAge + PresidentAge + 
-##     Revenue + netIncome + lastFiscalYearGrowth, data = IPO_sub)
+## coxph(formula = Surv(DaysToIPO) ~ LastSale + employees + strata(Sector) + 
+##     strata(CEOGender) + CEOAge + PresidentAge + Revenue + netIncome + 
+##     lastFiscalYearGrowth, data = IPO_sub)
 ## 
-##                            coef  exp(coef)   se(coef)      z      p
-## LastSale             -7.637e-05  9.999e-01  7.910e-04 -0.097 0.9231
-## employees            -4.886e-06  1.000e+00  2.447e-06 -1.996 0.0459
-## CEOAge               -1.416e-02  9.859e-01  6.071e-03 -2.332 0.0197
-## PresidentAge         -5.151e-03  9.949e-01  6.155e-03 -0.837 0.4027
-## Revenue              -3.197e-12  1.000e+00  2.904e-12 -1.101 0.2709
-## netIncome             1.913e-11  1.000e+00  1.544e-11  1.239 0.2153
-## lastFiscalYearGrowth  1.081e-03  1.001e+00  8.241e-04  1.312 0.1894
+##                            coef  exp(coef)   se(coef)      z       p
+## LastSale             -4.480e-04  9.996e-01  6.349e-04 -0.706   0.480
+## employees            -7.399e-06  1.000e+00  1.838e-06 -4.025 5.7e-05
+## CEOAge               -7.889e-03  9.921e-01  5.214e-03 -1.513   0.130
+## PresidentAge         -3.907e-03  9.961e-01  5.375e-03 -0.727   0.467
+## Revenue              -8.417e-13  1.000e+00  9.155e-13 -0.919   0.358
+## netIncome             6.031e-12  1.000e+00  5.815e-12  1.037   0.300
+## lastFiscalYearGrowth  1.277e-03  1.001e+00  7.803e-04  1.637   0.102
 ## 
-## Likelihood ratio test=24.13  on 7 df, p=0.00108
+## Likelihood ratio test=35.18  on 7 df, p=1.037e-05
 ## n= 1280, number of events= 1280 
 ##    (1541 observations deleted due to missingness)
 \end{verbatim}
@@ -505,7 +483,7 @@
 ## n=2203 (618 observations deleted due to missingness)
 \end{verbatim}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-37-1.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-31-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -545,7 +523,7 @@
 ## n=2203 (618 observations deleted due to missingness)
 \end{verbatim}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-39-1.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-33-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -586,7 +564,7 @@
 ## n=2203 (618 observations deleted due to missingness)
 \end{verbatim}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-41-1.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-35-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -627,7 +605,7 @@
 ## n=2203 (618 observations deleted due to missingness)
 \end{verbatim}
 
-\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-43-1.pdf}
+\includegraphics{Capstone-Project_files/figure-latex/unnamed-chunk-37-1.pdf}
 
 \hypertarget{model-comparison}{%
 \subsubsection{Model comparison}\label{model-comparison}}

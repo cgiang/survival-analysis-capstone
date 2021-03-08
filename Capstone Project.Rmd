@@ -1,8 +1,8 @@
 ---
 title: "Capstone Project"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
@@ -153,70 +153,29 @@ data<-select(IPO_sub,-Sector,-Industry,-CEOGender)
 library(pcalg)
 suff_stat <- list(C = cor(data), n = nrow(data))
 pc_data <- pc(suff_stat, indepTest = gaussCItest, labels = colnames(data), alpha = 0.05, skel.method = "stable.fast")
-plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
+#plot(pc_data, main = "pcalg graph",  cex.main=1.5, cex.sub=2.5)
 ```
 
-```{r, warning=FALSE, message=FALSE}
-ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 35.9800)+ylim(0,40000)
-ggplot(data=IPO_sub,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 1.625e+09)+ylim(0,40000)
-ggplot(data=IPO_sub,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()+xlim(0, 3860)+ylim(0,40000)
+```{r, warning=FALSE, message=FALSE, fig.width=6, fig.height=4}
+ggplot(data=IPO_sub,aes(x=log(log(LastSale)),y=DaysToIPO))+geom_point(alpha=0.3, col ="blue")+geom_smooth(se=FALSE, show.legend = FALSE,col="black")+theme_minimal()+ylim(0,40000)+theme(axis.title.x = element_text(size=14),axis.title.y = element_text(size=14))
 ```
 
-```{r, echo=FALSE}
-# omit outlier (max value of Revenue, LastSale)
-IPO_sub2 = IPO_sub %>% 
-  filter (Revenue < 5.579e+13, LastSale < 1441.5000) 
-IPO_sub3 = IPO_sub %>%
-  filter (CEOGender == "male" | CEOGender == "mostly_male" | CEOGender == "female" | CEOGender == "mostly_female")
+```{r, warning=FALSE, message=FALSE, fig.width=6, fig.height=4}
+ggplot(data=IPO_sub,aes(x=log(employees),y=DaysToIPO))+geom_point(alpha=0.3, col ="blue")+geom_smooth(se=FALSE, show.legend = FALSE,col="black")+theme_minimal()+ylim(0,40000)+theme(axis.title.x = element_text(size=14),axis.title.y = element_text(size=14))
 ```
 
-```{r, warning=FALSE, message=FALSE}
-ggplot(data=IPO_sub2,aes(x=LastSale,y=DaysToIPO))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub2,aes(x=Revenue,y=DaysToIPO))+geom_point()+geom_smooth()
-ggplot(data=IPO_sub2,aes(x=employees,y=DaysToIPO))+geom_point()+geom_smooth()
+```{r, warning=FALSE, message=FALSE, fig.width=6, fig.height=4}
+ggplot(data=IPO_sub,aes(x=log(Revenue),y=DaysToIPO))+geom_point(alpha=0.3, col ="blue")+geom_smooth(se=FALSE, show.legend = FALSE,col="black")+theme_minimal()+ylim(0,40000)+theme(axis.title.x = element_text(size=14),axis.title.y = element_text(size=14))
 ```
 
-
-```{r fig.width=9, fig.height=6}
-ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO)) +
-  geom_boxplot() + 
-  theme(axis.text.x = element_text(angle = 90))
+```{r fig.width=9, fig.height=6,warning=FALSE}
+ggplot(IPO_sub,aes(x=Sector,y=DaysToIPO,fill=Sector)) +
+  geom_boxplot(show.legend=FALSE) + 
+  theme_minimal()+
+  ylim(0,15000)+
+  theme(axis.text.x = element_text(angle = 90, size=12),axis.title.x = element_text(size=16),axis.title.y = element_text(size=16))
 ```
 
-```{r, echo=FALSE}
-# ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO,color=factor(Sector)))+geom_point()+geom_smooth()
-# 
-# # Alternatively
-# ggplot(IPO_sub,aes(x=LastSale,y=DaysToIPO)) +
-#     geom_boxplot() +
-#     facet_grid(~Sector)
-
-# no clear trend 
-# ggplot(IPO_sub3,aes(x=CEOGender,y=DaysToIPO)) +
-#   geom_boxplot() + 
-#   theme(axis.text.x = element_text(angle = 90))
-```
-
-
-```{r, echo=FALSE}
-# ggplot(data=IPO_sub,aes(x=LastSale,y=DaysToIPO,color=factor(daysProfitGrouped)))+geom_point()+geom_smooth()
-
-# Alternatively
-# ggplot(IPO_sub,aes(x=LastSale,y=DaysToIPO)) +
-#     geom_boxplot() +
-#     facet_grid(~daysProfitGrouped)
-```
-
-
-```{r fig.width=9, fig.height=6, echo=FALSE}
-#### Check interactions
-# No interaction effect with Sector or CEOGender
-
-# ggplot(IPO_sub,aes(x=Sector,y=employees)) + geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-# ggplot(IPO_sub,aes(x=Sector,y=LastSale)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-# ggplot(IPO_sub,aes(x=Sector,y=Revenue)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-# ggplot(IPO_sub3,aes(x=CEOGender,y=LastSale)) +geom_boxplot() + theme(axis.text.x = element_text(angle = 90))
-```
 
 ## Modeling with DaysToIPO 
 
@@ -231,52 +190,6 @@ plot( cox.zph(m4) )
 
 m9 = coxph( Surv( DaysToIPO) ~ LastSale , data=IPO_sub )
 plot( cox.zph(m9) )
-```
-
-
-```{r, echo=FALSE}
-# m1, m2 and m10 happen after IPO so they're commented out 
-# the rest are commented out bc they violate the PH assumption 
-
-#m1 = coxph( Surv( DaysToIPO) ~ DaysBetterThanSP , data=IPO_sub )
-#plot( cox.zph(m1) )
-
-#m2 = coxph( Surv( DaysToIPO) ~ daysProfit , data=IPO_sub )
-#plot( cox.zph(m2) )
-
-#m5 = coxph( Surv( DaysToIPO) ~ CEOAge , data=IPO_sub )
-#plot( cox.zph(m5) )
-
-#m6 = coxph( Surv( DaysToIPO) ~ PresidentAge , data=IPO_sub )
-#plot( cox.zph(m6) )
-
-#m7 = coxph( Surv( DaysToIPO) ~ lastFiscalYearGrowth , data=IPO_sub )
-#plot( cox.zph(m7) )
-
-#m8 = coxph( Surv( DaysToIPO) ~ employees , data=IPO_sub )
-#plot( cox.zph(m8) )
-
-
-#m10 = coxph( Surv( DaysToIPO) ~ MarketCap , data=IPO_sub )
-#plot( cox.zph(m10) )
-
-#m11 = coxph( Surv( DaysToIPO) ~ Sector , data=IPO_sub )
-#plot( cox.zph(m11) )
-
-#m12 = coxph( Surv( DaysToIPO) ~ Industry , data=IPO_sub )
-#plot( cox.zph(m12) )
-
-#m13 = coxph( Surv( DaysToIPO) ~ CEOTakeOver , data=IPO_sub )
-#plot( cox.zph(m13) )
-
-#m14 = coxph( Surv( DaysToIPO) ~ CEOAge , data=IPO_sub )
-#plot( cox.zph(m14) )
-
-#m15 = coxph( Surv( DaysToIPO) ~ CEOGender , data=IPO_sub )
-#plot( cox.zph(m15) )
-
-#m16 = coxph( Surv( DaysToIPO) ~ PresidentAge , data=IPO_sub )
-#plot( cox.zph(m16) )
 ```
 
 ```{r}
@@ -305,17 +218,12 @@ cox.zph(m9) ## >  0.05
 
 
 ```{r}
-coxph(Surv(DaysToIPO)~LastSale+employees+strata(Industry)+strata(Sector)+strata(CEOGender)+CEOAge+PresidentAge+Revenue+netIncome+lastFiscalYearGrowth,data=IPO_sub)
+coxph(Surv(DaysToIPO)~LastSale+employees+strata(Sector)+strata(CEOGender)+CEOAge+PresidentAge+Revenue+netIncome+lastFiscalYearGrowth,data=IPO_sub)
 ```
 
 ```{r}
 coxph(Surv(DaysToIPO)~CEOAge,data=IPO_sub) # significant
 coxph(Surv(DaysToIPO)~PresidentAge,data=IPO_sub) # significant
-```
-
-```{r, echo=FALSE}
-# coxph(Surv(DaysToIPO)~netIncome,data=IPO_sub) # insignificant
-# coxph(Surv(DaysToIPO)~lastFiscalYearGrowth,data=IPO_sub) # insignificant
 ```
 
 
@@ -329,16 +237,6 @@ coxph(Surv(DaysToIPO)~LastSale,data=IPO_sub) # significant
 
 ```{r, echo=FALSE}
 # coxph(Surv(DaysToIPO)~Revenue,data=IPO_sub) # not significant
-```
-
-
-```{r, echo = FALSE}
-#coxph(Surv(DaysToIPO)~LastSale+employees,data=IPO_sub) # significant
-#coxph(Surv(DaysToIPO)~LastSale+strata(employees),data=IPO_sub) # insignificant
-#coxph(Surv(DaysToIPO)~LastSale+employees+strata(Sector),data=IPO_sub) # significant
-#coxph(Surv(DaysToIPO)~LastSale+strata(employees)+strata(Sector),data=IPO_sub) # insignificant
-#coxph(Surv(DaysToIPO)~LastSale+employees+strata(Industry),data=IPO_sub) # significant
-#coxph(Surv(DaysToIPO)~LastSale+strata(employees)+strata(Industry),data=IPO_sub) # insignificant
 ```
 
 ```{r}
