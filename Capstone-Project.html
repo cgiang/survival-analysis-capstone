@@ -465,38 +465,18 @@ cox.zph(m3) ## &gt;  0.05</code></pre>
 <pre><code>##           chisq df    p
 ## LastSale 0.0846  1 0.77
 ## GLOBAL   0.0846  1 0.77</code></pre>
-<pre class="r"><code>coxph(Surv(DaysToIPO)~LastSale+Revenue+strata(Sector)+strata(CEOGender),data=IPO_sub)</code></pre>
+<pre class="r"><code>coxph(Surv(DaysToIPO)~LastSale+netIncome+strata(Sector)+strata(CEOGender),data=IPO_sub)</code></pre>
 <pre><code>## Call:
-## coxph(formula = Surv(DaysToIPO) ~ LastSale + Revenue + strata(Sector) + 
+## coxph(formula = Surv(DaysToIPO) ~ LastSale + netIncome + strata(Sector) + 
 ##     strata(CEOGender), data = IPO_sub)
 ## 
-##                coef  exp(coef)   se(coef)      z       p
-## LastSale -1.661e-03  9.983e-01  5.402e-04 -3.075 0.00211
-## Revenue  -1.950e-14  1.000e+00  1.543e-14 -1.263 0.20642
+##                 coef  exp(coef)   se(coef)      z        p
+## LastSale  -1.976e-03  9.980e-01  5.416e-04 -3.649 0.000264
+## netIncome -2.033e-13  1.000e+00  1.449e-13 -1.403 0.160665
 ## 
-## Likelihood ratio test=12.94  on 2 df, p=0.001552
-## n= 2291, number of events= 2291 
-##    (412 observations deleted due to missingness)</code></pre>
-<pre class="r"><code>coxph(Surv(DaysToIPO)~CEOAge,data=IPO_sub) # significant</code></pre>
-<pre><code>## Call:
-## coxph(formula = Surv(DaysToIPO) ~ CEOAge, data = IPO_sub)
-## 
-##             coef exp(coef)  se(coef)      z       p
-## CEOAge -0.013822  0.986273  0.002704 -5.111 3.2e-07
-## 
-## Likelihood ratio test=26.18  on 1 df, p=3.107e-07
-## n= 2435, number of events= 2435 
-##    (268 observations deleted due to missingness)</code></pre>
-<pre class="r"><code>coxph(Surv(DaysToIPO)~PresidentAge,data=IPO_sub) # significant</code></pre>
-<pre><code>## Call:
-## coxph(formula = Surv(DaysToIPO) ~ PresidentAge, data = IPO_sub)
-## 
-##                   coef exp(coef)  se(coef)      z      p
-## PresidentAge -0.007637  0.992392  0.003006 -2.541 0.0111
-## 
-## Likelihood ratio test=6.46  on 1 df, p=0.01102
-## n= 2109, number of events= 2109 
-##    (594 observations deleted due to missingness)</code></pre>
+## Likelihood ratio test=18.15  on 2 df, p=0.0001145
+## n= 2544, number of events= 2544 
+##    (159 observations deleted due to missingness)</code></pre>
 <pre class="r"><code>coxph(Surv(DaysToIPO)~LastSale,data=IPO_sub) # significant</code></pre>
 <pre><code>## Call:
 ## coxph(formula = Surv(DaysToIPO) ~ LastSale, data = IPO_sub)

@@ -202,12 +202,7 @@ cox.zph(m9) ## >  0.05
 
 
 ```{r}
-coxph(Surv(DaysToIPO)~LastSale+Revenue+strata(Sector)+strata(CEOGender),data=IPO_sub)
-```
-
-```{r}
-coxph(Surv(DaysToIPO)~CEOAge,data=IPO_sub) # significant
-coxph(Surv(DaysToIPO)~PresidentAge,data=IPO_sub) # significant
+coxph(Surv(DaysToIPO)~LastSale+netIncome+strata(Sector)+strata(CEOGender),data=IPO_sub)
 ```
 
 
@@ -557,3 +552,7 @@ ts=2*(-7243.1-(-8984.5))
 2*(5-(-8984.5))
 2*(6-(-7952.4))
 ```
+
+
+
+
