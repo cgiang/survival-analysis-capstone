@@ -465,24 +465,18 @@ cox.zph(m3) ## &gt;  0.05</code></pre>
 <pre><code>##           chisq df    p
 ## LastSale 0.0846  1 0.77
 ## GLOBAL   0.0846  1 0.77</code></pre>
-<pre class="r"><code>coxph(Surv(DaysToIPO)~LastSale+employees+strata(Sector)+strata(CEOGender)+CEOAge+PresidentAge+Revenue+netIncome+lastFiscalYearGrowth,data=IPO_sub)</code></pre>
+<pre class="r"><code>coxph(Surv(DaysToIPO)~LastSale+Revenue+strata(Sector)+strata(CEOGender),data=IPO_sub)</code></pre>
 <pre><code>## Call:
-## coxph(formula = Surv(DaysToIPO) ~ LastSale + employees + strata(Sector) + 
-##     strata(CEOGender) + CEOAge + PresidentAge + Revenue + netIncome + 
-##     lastFiscalYearGrowth, data = IPO_sub)
+## coxph(formula = Surv(DaysToIPO) ~ LastSale + Revenue + strata(Sector) + 
+##     strata(CEOGender), data = IPO_sub)
 ## 
-##                            coef  exp(coef)   se(coef)      z        p
-## LastSale             -4.335e-04  9.996e-01  6.343e-04 -0.683    0.494
-## employees            -7.345e-06  1.000e+00  1.834e-06 -4.006 6.17e-05
-## CEOAge               -7.784e-03  9.922e-01  5.244e-03 -1.484    0.138
-## PresidentAge         -3.772e-03  9.962e-01  5.412e-03 -0.697    0.486
-## Revenue              -8.454e-13  1.000e+00  9.157e-13 -0.923    0.356
-## netIncome             6.044e-12  1.000e+00  5.814e-12  1.040    0.299
-## lastFiscalYearGrowth  1.277e-03  1.001e+00  7.803e-04  1.636    0.102
+##                coef  exp(coef)   se(coef)      z       p
+## LastSale -1.661e-03  9.983e-01  5.402e-04 -3.075 0.00211
+## Revenue  -1.950e-14  1.000e+00  1.543e-14 -1.263 0.20642
 ## 
-## Likelihood ratio test=34.55  on 7 df, p=1.356e-05
-## n= 1271, number of events= 1271 
-##    (1432 observations deleted due to missingness)</code></pre>
+## Likelihood ratio test=12.94  on 2 df, p=0.001552
+## n= 2291, number of events= 2291 
+##    (412 observations deleted due to missingness)</code></pre>
 <pre class="r"><code>coxph(Surv(DaysToIPO)~CEOAge,data=IPO_sub) # significant</code></pre>
 <pre><code>## Call:
 ## coxph(formula = Surv(DaysToIPO) ~ CEOAge, data = IPO_sub)
